@@ -1,10 +1,10 @@
 bl_info = {
-    "name": "SWG Export Tools",
+    "name": "SWG POI Exporter",
     "author": "Collin Farrell",
     "version": (1, 0, 0),
     "blender": (3, 0, 0),
     "location": "File > Export",
-    "description": "Combined tools for SWG exports (.mif and .txt table)",
+    "description": "Exports SWG MIF and POI data from Blender collections",
     "category": "Import-Export",
 }
 
@@ -28,3 +28,4 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+

@@ -178,8 +178,7 @@ def build_cldf_for_collection(col):
     for o in iter_collection_objects(col, recursive=True):
         if o.type == 'LIGHT' and getattr(o.data, "type", None) == 'POINT':
             lobjs.append(light_to_lobj(o))
-        elif o.type == 'EMPTY' and getattr(o, "empty_display_type", None) == 'ARROWS':
-            if str(get_cp(o, "type", "")).upper() == "CHLD":
+        elif str(get_cp(o, "type", "")).upper() == "CHLD":
                 chlds.append(arrow_to_chld(o))
 
     if not lobjs and not chlds:
