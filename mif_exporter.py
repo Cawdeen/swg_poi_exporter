@@ -1,10 +1,10 @@
 bl_info = {
     "name": "Export Collection to MIF (LOBJ + CHLD)",
-    "author": "You",
+    "author": "Collin Farrell",
     "version": (1, 0, 0),
     "blender": (3, 0, 0),
     "location": "File > Export",
-    "description": "Exports POINT lights as LOBJ and Arrow Empties (type=CHLD) as CHLD from the active collection to a .mif",
+    "description": "Exports POINT lights as LOBJ and Objects (type=CHLD) as CHLD chunks from the active collection to a .mif",
     "category": "Import-Export",
 }
 
