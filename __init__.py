@@ -12,17 +12,21 @@ if "bpy" in locals():
     import importlib
     importlib.reload(mif_exporter)
     importlib.reload(poi_exporter)
+    importlib.reload(poi_template_generator)
 else:
     from . import mif_exporter
     from . import poi_exporter
+    from . import poi_template_generator
 
 import bpy
 
 def register():
     mif_exporter.register()
     poi_exporter.register()
+    poi_template_generator.register()
 
 def unregister():
+    poi_template_generator.unregister()
     poi_exporter.unregister()
     mif_exporter.unregister()
 

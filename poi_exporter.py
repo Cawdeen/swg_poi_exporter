@@ -1,17 +1,21 @@
 bl_info = {
     "name": "Export Collection to SWG Table",
     "author": "Collin Farrell",
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "blender": (3, 0, 0),
     "location": "File > Export",
-    "description": "Exports all mesh objects in the active collection (and sub-collections) to SWG coordinate table using object property TEMPLATE",
+    "description": "Exports all mesh/empty objects in the active collection to SWG coordinate table using TEMPLATE property. Auto-saves to datatables\\poi\\shatterpoint",
     "category": "Import-Export",
 }
 
 import bpy
 import math
-from bpy_extras.io_utils import ExportHelper
 from pathlib import Path
+
+# ------------------------------------------------------------
+# CONFIGURATION
+# ------------------------------------------------------------
+EXPORT_DIR = Path(r"D:\r3git\dsrc\sku.0\sys.server\compiled\game\datatables\poi")
 
 # ------------------------------------------------------------
 # helpers
@@ -59,11 +63,10 @@ def build_table_for_collection(col):
 # ------------------------------------------------------------
 # operator
 # ------------------------------------------------------------
-class EXPORT_SCENE_OT_collection_swgtable(bpy.types.Operator, ExportHelper):
-    """Export active collection (and sub-collections) to SWG coordinate table"""
+class EXPORT_SCENE_OT_collection_swgtable(bpy.types.Operator):
+    """Export active collection to SWG coordinate table (auto path)"""
     bl_idname = "export_scene.collection_swgtable"
     bl_label = "Collection → SWG Table (.txt)"
-    filename_ext = ".txt"
 
     def execute(self, context):
         alc = context.view_layer.active_layer_collection
@@ -77,10 +80,11 @@ class EXPORT_SCENE_OT_collection_swgtable(bpy.types.Operator, ExportHelper):
             self.report({'WARNING'}, f'No valid objects found in "{col.name}".')
             return {'CANCELLED'}
 
-        out_path = Path(self.filepath)
-        if out_path.is_dir() or out_path.suffix.lower() != ".txt":
-            out_path = out_path / f"{col.name}.txt"
+        # Build auto output path
+        EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+        out_path = EXPORT_DIR / f"{col.name}.txt"
 
+        # Write file
         with open(out_path, "w", encoding="utf-8") as f:
             f.write("TEMPLATE\tX\tY\tZ\tYAW\n")
             f.write("\n".join(rows))
