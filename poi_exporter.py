@@ -55,7 +55,9 @@ def build_table_for_collection(col):
         swg_z = o.location.y     # Blender Y → SWG Z
         swg_yaw = -math.degrees(o.rotation_euler.z)
 
-        template = str(get_cp(o, "TEMPLATE", o.name))
+        template = o.get("TEMPLATE", None)
+        if not template:
+            continue  # skip objects without TEMPLATE property
         rows.append(f"{template}\t{f2(swg_x)}\t{f2(swg_y)}\t{f2(swg_z)}\t{f2(swg_yaw)}")
 
     return rows
@@ -66,7 +68,7 @@ def build_table_for_collection(col):
 class EXPORT_SCENE_OT_collection_swgtable(bpy.types.Operator):
     """Export active collection to SWG coordinate table (auto path)"""
     bl_idname = "export_scene.collection_swgtable"
-    bl_label = "Collection → SWG Table (.txt)"
+    bl_label = "Collection → SWG Table (.tab)"
 
     def execute(self, context):
         alc = context.view_layer.active_layer_collection
@@ -82,12 +84,17 @@ class EXPORT_SCENE_OT_collection_swgtable(bpy.types.Operator):
 
         # Build auto output path
         EXPORT_DIR.mkdir(parents=True, exist_ok=True)
-        out_path = EXPORT_DIR / f"{col.name}.txt"
+        out_path = EXPORT_DIR / f"{col.name}.tab"
 
         # Write file
         with open(out_path, "w", encoding="utf-8") as f:
+            # Header row
             f.write("TEMPLATE\tX\tY\tZ\tYAW\n")
+            # Column types (s = string, f = float)
+            f.write("s\tf\tf\tf\tf\n")
+            # Data rows
             f.write("\n".join(rows))
+            f.write("\n")  # ensure trailing newline
 
         self.report({'INFO'}, f'Exported {len(rows)} objects from "{col.name}" to "{out_path}".')
         return {'FINISHED'}

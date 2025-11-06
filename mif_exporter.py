@@ -9,6 +9,7 @@ bl_info = {
 }
 
 import bpy
+import math
 from mathutils import Vector
 from math import degrees
 from pathlib import Path
@@ -98,11 +99,13 @@ def arrow_to_chld(obj):
     pos_y = float(p.z)
     pos_z = float(p.y)
 
-    # Orientation
-    r = obj.matrix_world.to_euler()
-    ori_x = float(degrees(r.x))
-    ori_y = float(degrees(r.z))
-    ori_z = float(degrees(r.y))
+    # Orientation (Blender -> SWG)
+    # SWG expects: X=pitch, Y=yaw, Z=roll in degrees (Y-up system)
+    r = obj.matrix_world.to_euler('XYZ')
+
+    ori_x = -math.degrees(r.z)   # Blender Z → SWG X (flipped)
+    ori_y = -math.degrees(r.x)   # Blender X → SWG Y
+    ori_z = -math.degrees(r.y)   # Blender Y → SWG Z
 
     # motion data
     rps_x = float(get_cp(obj, "rps_x", 0.0))
